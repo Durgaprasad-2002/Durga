@@ -100,7 +100,7 @@ app.put("/modifycar/:id", async (req, res) => {
 
 //--deleting car data
 
-app.delete("/deletebook/:id", async (req, res) => {
+app.delete("/deletecar/:id", async (req, res) => {
   const itemId = req.params.id;
   const db = await connectToDB();
   const collection = db.collection("carsdata");
