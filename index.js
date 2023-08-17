@@ -57,7 +57,6 @@ async function connectToDB() {
     const client = new MongoClient(mongoURI, { useUnifiedTopology: true });
     await client.connect();
     const db = client.db("rental");
-    Update();
     console.log("Connected");
     return db;
   } catch (error) {
@@ -81,6 +80,7 @@ app.post("/postlogcred", async (req, res) => {
 //---retriveing login details
 
 app.get("/getlogcred", async (req, res) => {
+  Update();
   const db = await connectToDB();
   const collection = db.collection("logins");
   const items = await collection.find({}).toArray();
