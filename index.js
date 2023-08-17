@@ -80,7 +80,6 @@ app.post("/postlogcred", async (req, res) => {
 //---retriveing login details
 
 app.get("/getlogcred", async (req, res) => {
-  Update();
   const db = await connectToDB();
   const collection = db.collection("logins");
   const items = await collection.find({}).toArray();
