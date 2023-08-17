@@ -21,8 +21,12 @@ const Update = async () => {
 
   const current = new Date();
   const date = `${current.getFullYear()}-${
-    current.getMonth() + 1
-  }-${current.getDate()}`;
+current.getMonth() + 1 < 9
+      ? "0" + current.getMonth() + 1
+      : current.getMonth() + 1
+  }-${current.getDate() < 9
+      ? "0" + current.getDate()
+      : current.getDate() }`;
 
   for (let i = 0; i < Caritems.length; i++) {
     for (let j = 0; j < Bookingitems.length; j++) {
