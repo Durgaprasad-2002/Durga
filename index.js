@@ -12,6 +12,39 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 
+const Update = async () => {
+  const db = await connectToDB();
+  const Bookingcollection = db.collection("Bookings");
+  const Bookingitems = await Bookingcollection.find({}).toArray();
+  const Carcollection = db.collection("carsdata");
+  const Caritems = await Carcollection.find({}).toArray();
+
+  const current = new Date();
+  const date = `${current.getFullYear()}-${
+    current.getMonth() + 1
+  }-${current.getDate()}`;
+
+  for (let i = 0; i < Caritems.length; i++) {
+    for (let j = 0; j < Bookingitems.length; j++) {
+      if (Caritems[i]._id == Bookingitems[j].BookingDetails.car_id) {
+        let En =
+          Bookingitems[j]?.EndTime?.split("T")[0] ||
+          Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0];
+        if (En < date) {
+          const itemId = Caritems[i]._id;
+          let updatedItem = Caritems[i];
+          updatedItem.car_status = "Available";
+          const collection = db.collection("carsdata");
+          const result = await collection.updateOne(
+            { _id: new ObjectId(itemId) },
+            { $set: updatedItem }
+          );
+        }
+      }
+    }
+  }
+};
+
 app.use(cors(corsOptions)); // Use this after the variable declaration
 const PORT = process.env.PORT || 3000;
 const mongoURI =
@@ -24,6 +57,7 @@ async function connectToDB() {
     const client = new MongoClient(mongoURI, { useUnifiedTopology: true });
     await client.connect();
     const db = client.db("rental");
+    Update();
     console.log("Connected");
     return db;
   } catch (error) {
