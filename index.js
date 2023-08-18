@@ -182,7 +182,8 @@ app.delete("/deletebook/:id", async (req, res) => {
 
 //----------------------------------------Staring Server---------------------------
 
-const Update = async () => {
+app.get("/updatestatuscar", async (req, res) => {
+
   const db = await connectToDB();
   const Bookingcollection = db.collection("Bookings");
   const Carcollection = db.collection("carsdata");
@@ -238,13 +239,14 @@ const Update = async () => {
     }
       
   }
-  Update();
-};
+ 
+});
+
+
 
 
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   connectToDB();
-  Update();
 });
