@@ -29,12 +29,13 @@ current.getMonth() + 1 < 9
       : current.getDate() }`;
 
   for (let i = 0; i < Caritems.length; i++) {
+    let flag = false;
     for (let j = 0; j < Bookingitems.length; j++) {
       if (Caritems[i]._id == Bookingitems[j].BookingDetails.car_id) {
         let En =
           Bookingitems[j]?.EndTime?.split("T")[0] ||
           Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0];
-        if (En < date) {
+        if (En <= date) {
           const itemId = Caritems[i]._id;
           let updatedItem = Caritems[i];
           updatedItem.car_status = "Available";
