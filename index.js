@@ -12,43 +12,7 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 
-const Update = async () => {
-  const db = await connectToDB();
-  const Bookingcollection = db.collection("Bookings");
-  const Bookingitems = await Bookingcollection.find({}).toArray();
-  const Carcollection = db.collection("carsdata");
-  const Caritems = await Carcollection.find({}).toArray();
 
-  const current = new Date();
-  const date = `${current.getFullYear()}-${
-current.getMonth() + 1 < 9
-      ? "0" + current.getMonth() + 1
-      : current.getMonth() + 1
-  }-${current.getDate() < 9
-      ? "0" + current.getDate()
-      : current.getDate() }`;
-
-  for (let i = 0; i < Caritems.length; i++) {
-    let flag = false;
-    for (let j = 0; j < Bookingitems.length; j++) {
-      if (Caritems[i]._id == Bookingitems[j].BookingDetails.car_id) {
-        let En =
-          Bookingitems[j]?.EndTime?.split("T")[0] ||
-          Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0];
-        if (En <= date) {
-          const itemId = Caritems[i]._id;
-          let updatedItem = Caritems[i];
-          updatedItem.car_status = "Available";
-          const collection = db.collection("carsdata");
-          const result = await collection.updateOne(
-            { _id: new ObjectId(itemId) },
-            { $set: updatedItem }
-          );
-        }
-      }
-    }
-  }
-};
 
 app.use(cors(corsOptions)); // Use this after the variable declaration
 const PORT = process.env.PORT || 3000;
@@ -219,7 +183,56 @@ app.delete("/deletebook/:id", async (req, res) => {
 
 //----------------------------------------Staring Server---------------------------
 
+const Update = async () => {
+  const db = await connectToDB();
+  const Bookingcollection = db.collection("Bookings");
+  const Carcollection = db.collection("carsdata");
+  const Bookingitems = await Bookingcollection.find({}).toArray();
+  const Caritems = await Carcollection.find({}).toArray();
+  //-----------------------------------------------------------------------
+  const current = new Date();
+  const date = `${current.getFullYear()}-${
+    current.getMonth() + 1
+  }-${current.getDate()}`;
+  //-----------------------------------------------------------------------
+  for (let i = 0; i < Caritems.length; i++) {
+    let flag = false;
+    for (let j = 0; j < Bookingitems.length; j++) {
+      if (
+        Caritems[i]._id == Bookingitems[j].BookingDetails.car_id &&
+        Caritems[i]?.car_status == "Booked"
+      ) {
+        let d1 = new Date(
+          Bookingitems[j]?.EndTime?.split("T")[0] ||
+            Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
+        );
+        let d2 = new Date(date);
+        if (d1 > d2) {
+          flag = true;
+          break;
+        }
+      }
+    }
+
+    if (flag == false && Caritems[i]?.car_status == "Booked") {
+      console.log("------------------------------------------");
+      const itemId = Caritems[i]._id;
+      let updatedItem = Caritems[i];
+      updatedItem.car_status = "Available";
+      const collection = db.collection("carsdata");
+      const result = await collection.updateOne(
+        { _id: new ObjectId(itemId) },
+        { $set: updatedItem }
+      );
+    }
+  }
+  Update();
+};
+
+
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   connectToDB();
+  Update();
 });
