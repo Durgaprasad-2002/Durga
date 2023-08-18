@@ -206,15 +206,16 @@ const Update = async () => {
             Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
         );
         let d2 = new Date(date);
-        console.log(d1,d2);
         if (d1 > d2) {
+          console.log(Bookingitems[j]);
+          console.log(d1,d2);
           flag = true;
           break;
         }
       }
     }
 
-    if (flag == false && Caritems[i]?.car_status == "Booked") {
+    if (flag === false && Caritems[i]?.car_status === "Booked") {
       console.log(Caritems[i]);
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
