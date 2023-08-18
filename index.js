@@ -90,7 +90,7 @@ app.post("/postcardata", async (req, res) => {
 app.put("/modifycar/:id", async (req, res) => {
   const itemId = req.params.id;
   const updatedItem = req.body.carData;
-  console.log(itemId);
+  console.log("Updated car");
   console.log(updatedItem);
   const db = await connectToDB();
   const collection = db.collection("carsdata");
@@ -98,7 +98,6 @@ app.put("/modifycar/:id", async (req, res) => {
     { _id: new ObjectId(itemId) },
     { $set: updatedItem }
   );
-  console.log(result);
   res.json(
     result.modifiedCount > 0
       ? { message: "Item updated successfully" }
@@ -207,6 +206,7 @@ const Update = async () => {
             Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
         );
         let d2 = new Date(date);
+        console.log(d1,d2);
         if (d1 > d2) {
           flag = true;
           break;
@@ -215,7 +215,7 @@ const Update = async () => {
     }
 
     if (flag == false && Caritems[i]?.car_status == "Booked") {
-      console.log("------------------------------------------");
+      console.log(Caritems[i]);
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
       updatedItem.car_status = "Available";
