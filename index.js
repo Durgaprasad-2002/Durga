@@ -215,7 +215,7 @@ const Update = async () => {
       }
     }
 
-    if (flag === false && Caritems[i]?.car_status === "Booked") {
+    if (flag === false) {
       console.log(Caritems[i]);
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
@@ -225,7 +225,18 @@ const Update = async () => {
         { _id: new ObjectId(itemId) },
         { $set: updatedItem }
       );
+    }else{
+      console.log(Caritems[i]);
+      const itemId = Caritems[i]._id;
+      let updatedItem = Caritems[i];
+      updatedItem.car_status = "Booked";
+      const collection = db.collection("carsdata");
+      const result = await collection.updateOne(
+        { _id: new ObjectId(itemId) },
+        { $set: updatedItem }
+      );
     }
+      
   }
   Update();
 };
