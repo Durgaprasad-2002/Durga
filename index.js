@@ -99,12 +99,22 @@ async function connectToDB() {
 //---posting login details
 
 app.post("/postlogcred", async (req, res) => {
-  const newItem = req.body;
-  console.log(newItem);
+  const newItem = req.body.cred;
+  const Check = {
+    type: newItem.type,
+    user: newItem.user,
+  };
   const db = await connectToDB();
   const collection = db.collection("logins");
-  const result = await collection.insertOne(newItem);
-  res.json(result);
+  const existingCredentials = await collection.findOne(Check);
+  if (existingCredentials) {
+    res.json({ statUser: "exits" });
+    console.log("Existed");
+  } else {
+    const result = await collection.insertOne(newItem);
+    res.json(result);
+    console.log("Created");
+  }
 });
 
 //---retriveing login details
