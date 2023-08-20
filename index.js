@@ -112,8 +112,10 @@ app.get("/getdata", async (req, res) => {
       );
       let d2 = new Date(date);
       console.log(Bookingitems[j],"entered");
+       console.log(d1, d2);
       if (
         Caritems[i]._id === Bookingitems[j].BookingDetails.car_id
+        
       ) {
         if (d1 >= d2) {
           console.log(Bookingitems[j]);
@@ -128,7 +130,6 @@ app.get("/getdata", async (req, res) => {
     if (flag == false) {
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
-    
       console.log(Caritems[i], "FalseOne");
       updatedItem.car_status = "Available";
       Caritems[i] = updatedItem;
