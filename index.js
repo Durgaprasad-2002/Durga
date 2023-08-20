@@ -94,9 +94,9 @@ const Update=()=>{
     }
       
   }
-  Update();
+  
 };
-Update();
+
 //---posting login details
 
 app.post("/postlogcred", async (req, res) => {
@@ -126,6 +126,7 @@ app.get("/getlogcred", async (req, res) => {
   const collection = db.collection("logins");
   const items = await collection.find({}).toArray();
   res.json(items);
+  Update();
 });
 
 
@@ -215,6 +216,7 @@ app.get("/bookingsdata", async (req, res) => {
   const collection = db.collection("Bookings");
   const items = await collection.find({}).toArray();
   res.json(items);
+  Update();
 });
 
 //---modifying data---
