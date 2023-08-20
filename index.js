@@ -72,7 +72,7 @@ const Update= async ()=>{
   }
   Update();
 };
-Update();
+
 
 
 app.use(cors(corsOptions)); // Use this after the variable declaration
@@ -263,4 +263,5 @@ app.delete("/deletebook/:id", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   connectToDB();
+  Update();
 });
