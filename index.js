@@ -14,30 +14,6 @@ const corsOptions = {
 
 
 
-
-
-
-
-app.use(cors(corsOptions)); // Use this after the variable declaration
-const PORT = process.env.PORT || 3000;
-const mongoURI =
-  "mongodb+srv://prasaddurga2031:1234@app.lkbwh19.mongodb.net/?retryWrites=true&w=majority";
-
-app.use(bodyParser.json());
-
-async function connectToDB() {
-  try {
-    const client = new MongoClient(mongoURI, { useUnifiedTopology: true });
-    await client.connect();
-    const db = client.db("rental");
-    console.log("Connected");
-    return db;
-  } catch (error) {
-    console.error("Error connecting to the database:", error);
-  }
-}
-
-//---------------------Login Credentials-------------------
 const Update=()=>{
   const db = await connectToDB();
   const Bookingcollection = db.collection("Bookings");
@@ -96,6 +72,30 @@ const Update=()=>{
   }
   
 };
+
+
+
+app.use(cors(corsOptions)); // Use this after the variable declaration
+const PORT = process.env.PORT || 3000;
+const mongoURI =
+  "mongodb+srv://prasaddurga2031:1234@app.lkbwh19.mongodb.net/?retryWrites=true&w=majority";
+
+app.use(bodyParser.json());
+
+async function connectToDB() {
+  try {
+    const client = new MongoClient(mongoURI, { useUnifiedTopology: true });
+    await client.connect();
+    const db = client.db("rental");
+    console.log("Connected");
+    return db;
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+  }
+}
+
+//---------------------Login Credentials-------------------
+
 
 //---posting login details
 
