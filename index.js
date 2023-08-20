@@ -73,7 +73,7 @@ app.get("/getlogcred", async (req, res) => {
 
 
 // app.get("/updatestatus", async (req, res) => {
-//   Update();
+//   ;
 // });
 
 
@@ -261,5 +261,4 @@ app.delete("/deletebook/:id", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   connectToDB();
-  Update();
 });
