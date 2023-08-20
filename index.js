@@ -14,63 +14,7 @@ const corsOptions = {
 
 
 
-const Update= async ()=>{
-  const db = await connectToDB();
-  const Bookingcollection = db.collection("Bookings");
-  const Carcollection = db.collection("carsdata");
-  const Bookingitems = await Bookingcollection.find({}).toArray();
-  const Caritems = await Carcollection.find({}).toArray();
-  //-----------------------------------------------------------------------
-  const current = new Date();
-  const date = `${current.getFullYear()}-${
-    current.getMonth() + 1
-  }-${current.getDate()}`;
-  //-----------------------------------------------------------------------
-  for (let i = 0; i < Caritems.length; i++) {
-    let flag = false;
-    for (let j = 0; j < Bookingitems.length; j++) {
-      if (
-        Caritems[i]._id == Bookingitems[j].BookingDetails.car_id &&
-        Caritems[i]?.car_status == "Booked"
-      ) {
-        let d1 = new Date(
-          Bookingitems[j]?.EndTime?.split("T")[0] ||
-            Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
-        );
-        let d2 = new Date(date);
-        if (d1 >= d2) {
-          console.log(Bookingitems[j]);
-          console.log(d1,d2);
-          flag = true;
-          break;
-        }
-      }
-    }
 
-    if (flag == false) {
-      console.log(Caritems[i],"FalseOne");
-      const itemId = Caritems[i]._id;
-      let updatedItem = Caritems[i];
-      updatedItem.car_status = "Available";
-      const collection = db.collection("carsdata");
-      const result = await collection.updateOne(
-        { _id: new ObjectId(itemId) },
-        { $set: updatedItem }
-      );
-    }else{
-      console.log(Caritems[i],"Trueone");
-      const itemId = Caritems[i]._id;
-      let updatedItem = Caritems[i];
-      updatedItem.car_status = "Booked";
-      const collection = db.collection("carsdata");
-      const result = await collection.updateOne(
-        { _id: new ObjectId(itemId) },
-        { $set: updatedItem }
-      );
-    }
-      
-  }
-};
 
 
 
@@ -141,11 +85,68 @@ app.get("/updatestatus", async (req, res) => {
 //--retriving cars data--
 
 app.get("/getdata", async (req, res) => {
-  await Update();
+  //---upmethod
+
   const db = await connectToDB();
-  const collection = db.collection("carsdata");
-  const items = await collection.find({}).toArray();
-  res.json(items);
+  const Bookingcollection = db.collection("Bookings");
+  const Carcollection = db.collection("carsdata");
+  const Bookingitems = await Bookingcollection.find({}).toArray();
+  const Caritems = await Carcollection.find({}).toArray();
+  //-----------------------------------------------------------------------
+  const current = new Date();
+  const date = `${current.getFullYear()}-${
+    current.getMonth() + 1
+  }-${current.getDate()}`;
+  //-----------------------------------------------------------------------
+  for (let i = 0; i < Caritems.length; i++) {
+    let flag = false;
+    for (let j = 0; j < Bookingitems.length; j++) {
+      if (
+        Caritems[i]._id == Bookingitems[j].BookingDetails.car_id &&
+        Caritems[i]?.car_status == "Booked"
+      ) {
+        let d1 = new Date(
+          Bookingitems[j]?.EndTime?.split("T")[0] ||
+            Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
+        );
+        let d2 = new Date(date);
+        if (d1 >= d2) {
+          console.log(Bookingitems[j]);
+          console.log(d1,d2);
+          flag = true;
+          break;
+        }
+      }
+    }
+
+    if (flag == false) {
+      console.log(Caritems[i],"FalseOne");
+      const itemId = Caritems[i]._id;
+      let updatedItem = Caritems[i];
+      updatedItem.car_status = "Available";
+      Caritems[i]=updatedItem;
+      const collection = db.collection("carsdata");
+      const result = await collection.updateOne(
+        { _id: new ObjectId(itemId) },
+        { $set: updatedItem }
+      );
+    }else{
+      console.log(Caritems[i],"Trueone");
+      const itemId = Caritems[i]._id;
+      let updatedItem = Caritems[i];
+      updatedItem.car_status = "Booked";
+      Caritems[i]=updatedItem;
+      const collection = db.collection("carsdata");
+      const result = await collection.updateOne(
+        { _id: new ObjectId(itemId) },
+        { $set: updatedItem }
+      );
+    }
+  }
+  res.json(Caritems);
+  // const collection = db.collection("carsdata");
+  // const items = await collection.find({}).toArray();
+  // res.json(items);
 });
 
 //--adding cars data
