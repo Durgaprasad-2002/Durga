@@ -14,7 +14,31 @@ const corsOptions = {
 
 
 
-const Update=async ()=>{
+
+
+
+
+app.use(cors(corsOptions)); // Use this after the variable declaration
+const PORT = process.env.PORT || 3000;
+const mongoURI =
+  "mongodb+srv://prasaddurga2031:1234@app.lkbwh19.mongodb.net/?retryWrites=true&w=majority";
+
+app.use(bodyParser.json());
+
+async function connectToDB() {
+  try {
+    const client = new MongoClient(mongoURI, { useUnifiedTopology: true });
+    await client.connect();
+    const db = client.db("rental");
+    console.log("Connected");
+    return db;
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+  }
+}
+
+//---------------------Login Credentials-------------------
+const Update=()=>{
   const db = await connectToDB();
   const Bookingcollection = db.collection("Bookings");
   const Carcollection = db.collection("carsdata");
@@ -70,32 +94,9 @@ const Update=async ()=>{
     }
       
   }
- 
+  Update();
 };
-
-
-
-app.use(cors(corsOptions)); // Use this after the variable declaration
-const PORT = process.env.PORT || 3000;
-const mongoURI =
-  "mongodb+srv://prasaddurga2031:1234@app.lkbwh19.mongodb.net/?retryWrites=true&w=majority";
-
-app.use(bodyParser.json());
-
-async function connectToDB() {
-  try {
-    const client = new MongoClient(mongoURI, { useUnifiedTopology: true });
-    await client.connect();
-    const db = client.db("rental");
-    console.log("Connected");
-    return db;
-  } catch (error) {
-    console.error("Error connecting to the database:", error);
-  }
-}
-
-//---------------------Login Credentials-------------------
-
+Update();
 //---posting login details
 
 app.post("/postlogcred", async (req, res) => {
@@ -125,7 +126,6 @@ app.get("/getlogcred", async (req, res) => {
   const collection = db.collection("logins");
   const items = await collection.find({}).toArray();
   res.json(items);
-  Update();
 });
 
 
@@ -215,7 +215,6 @@ app.get("/bookingsdata", async (req, res) => {
   const collection = db.collection("Bookings");
   const items = await collection.find({}).toArray();
   res.json(items);
-  Update();
 });
 
 //---modifying data---
