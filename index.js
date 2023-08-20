@@ -14,7 +14,7 @@ const corsOptions = {
 
 
 
-const Update=()=>{
+const Update= async ()=>{
   const db = await connectToDB();
   const Bookingcollection = db.collection("Bookings");
   const Carcollection = db.collection("carsdata");
@@ -70,7 +70,7 @@ const Update=()=>{
     }
       
   }
-  
+  Update():
 };
 
 
@@ -126,7 +126,7 @@ app.get("/getlogcred", async (req, res) => {
   const collection = db.collection("logins");
   const items = await collection.find({}).toArray();
   res.json(items);
-  Update();
+
 });
 
 
@@ -206,7 +206,7 @@ app.post("/postbookingdata", async (req, res) => {
   const collection = db.collection("Bookings");
   const result = await collection.insertOne(newItem);
   res.json(result);
-  Update();
+
 });
 
 //--retriving booksing data---
@@ -216,7 +216,7 @@ app.get("/bookingsdata", async (req, res) => {
   const collection = db.collection("Bookings");
   const items = await collection.find({}).toArray();
   res.json(items);
-  Update();
+
 });
 
 //---modifying data---
@@ -238,7 +238,7 @@ app.put("/modifybook/:id", async (req, res) => {
       ? { message: "Item updated successfully" }
       : console.log("NOT Updated")
   );
-  Update();
+
 });
 
 //-to delete
