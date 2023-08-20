@@ -72,7 +72,7 @@ const Update= async ()=>{
   }
   Update();
 };
-
+Update();
 
 
 app.use(cors(corsOptions)); // Use this after the variable declaration
