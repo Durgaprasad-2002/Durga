@@ -111,9 +111,9 @@ app.get("/getdata", async (req, res) => {
           Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
       );
       let d2 = new Date(date);
+      console.log(Bookingitems[j],"entered");
       if (
-        Caritems[i]._id == Bookingitems[j].BookingDetails.car_id &&
-        d1 >= d2
+        Caritems[i]._id === Bookingitems[j].BookingDetails.car_id
       ) {
         if (d1 >= d2) {
           console.log(Bookingitems[j]);
@@ -128,9 +128,7 @@ app.get("/getdata", async (req, res) => {
     if (flag == false) {
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
-      if (updatedItem.car_status == "Available") {
-        break;
-      }
+    
       console.log(Caritems[i], "FalseOne");
       updatedItem.car_status = "Available";
       Caritems[i] = updatedItem;
@@ -142,9 +140,6 @@ app.get("/getdata", async (req, res) => {
     } else {
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
-      if (updatedItem.car_status == "Booked") {
-        break;
-      }
       console.log(Caritems[i], "Trueone");
       updatedItem.car_status = "Booked";
       Caritems[i] = updatedItem;
