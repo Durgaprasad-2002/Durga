@@ -95,21 +95,15 @@ app.get("/getdata", async (req, res) => {
       { "BookingDetails.EndTime": { $gte: minDate } },
     ],
   }).toArray();
-  // try {
-  //   let Bookingitems = await Bookingcollection.find({
-  //     "BookingDetails.EndTime": { $gte: minDate },
-  //   }).toArray();
-  //   console.log(Bookingitems);
 
-  //   // Process Bookingitems here
-  // } catch (error) {
-  //   console.error("Error fetching data:", error);
-  // }
   console.log(Bookingitems);
+
+  let size = Bookingitems.length;
   let Caritems = await Carcollection.find({}).toArray();
   //-----------------------------------------------------------------------
   //-----------------------------------------------------------------------
   for (let i = 0; i < Caritems.length; i++) {
+    if (size === 0) break;
     let flag = false;
     for (let j = 0; j < Bookingitems.length; j++) {
       let d1 = new Date(
@@ -125,15 +119,19 @@ app.get("/getdata", async (req, res) => {
           console.log(Bookingitems[j]);
           console.log(d1, d2);
           flag = true;
+          size = size - 1;
           break;
         }
       }
     }
 
     if (flag == false) {
-      console.log(Caritems[i], "FalseOne");
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
+      if (updatedItem.car_status == "Available") {
+        break;
+      }
+      console.log(Caritems[i], "FalseOne");
       updatedItem.car_status = "Available";
       Caritems[i] = updatedItem;
       const collection = db.collection("carsdata");
@@ -142,9 +140,12 @@ app.get("/getdata", async (req, res) => {
         { $set: updatedItem }
       );
     } else {
-      console.log(Caritems[i], "Trueone");
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
+      if (updatedItem.car_status == "Booked") {
+        break;
+      }
+      console.log(Caritems[i], "Trueone");
       updatedItem.car_status = "Booked";
       Caritems[i] = updatedItem;
       const collection = db.collection("carsdata");
