@@ -70,7 +70,6 @@ const Update= async ()=>{
     }
       
   }
-  Update();
 };
 
 
@@ -142,6 +141,7 @@ app.get("/updatestatus", async (req, res) => {
 //--retriving cars data--
 
 app.get("/getdata", async (req, res) => {
+  await Update();
   const db = await connectToDB();
   const collection = db.collection("carsdata");
   const items = await collection.find({}).toArray();
