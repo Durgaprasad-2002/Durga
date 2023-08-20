@@ -126,7 +126,7 @@ app.get("/getlogcred", async (req, res) => {
   const collection = db.collection("logins");
   const items = await collection.find({}).toArray();
   res.json(items);
-
+  Update();
 });
 
 
@@ -206,7 +206,7 @@ app.post("/postbookingdata", async (req, res) => {
   const collection = db.collection("Bookings");
   const result = await collection.insertOne(newItem);
   res.json(result);
-
+Update();
 });
 
 //--retriving booksing data---
@@ -238,7 +238,7 @@ app.put("/modifybook/:id", async (req, res) => {
       ? { message: "Item updated successfully" }
       : console.log("NOT Updated")
   );
-
+Update();
 });
 
 //-to delete
