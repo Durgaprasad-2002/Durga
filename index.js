@@ -12,12 +12,6 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 
-
-
-
-
-
-
 app.use(cors(corsOptions)); // Use this after the variable declaration
 const PORT = process.env.PORT || 3000;
 const mongoURI =
@@ -39,7 +33,6 @@ async function connectToDB() {
 
 //---------------------Login Credentials-------------------
 
-
 //---posting login details
 
 app.post("/postlogcred", async (req, res) => {
@@ -59,7 +52,6 @@ app.post("/postlogcred", async (req, res) => {
     res.json(result);
     console.log("Created");
   }
- 
 });
 
 //---retriveing login details
@@ -71,11 +63,9 @@ app.get("/getlogcred", async (req, res) => {
   res.json(items);
 });
 
-
 // app.get("/updatestatus", async (req, res) => {
 //   ;
 // });
-
 
 //---------------------------------------------------------------------------------
 
@@ -85,33 +75,55 @@ app.get("/getlogcred", async (req, res) => {
 
 app.get("/getdata", async (req, res) => {
   //---upmethod
-
-  const db = await connectToDB();
-  const Bookingcollection = db.collection("Bookings");
-  const Carcollection = db.collection("carsdata");
-  let Bookingitems = await Bookingcollection.find({}).toArray();
-  let Caritems = await Carcollection.find({}).toArray();
-  //-----------------------------------------------------------------------
   const current = new Date();
+
   const date = `${current.getFullYear()}-${
     current.getMonth() + 1
   }-${current.getDate()}`;
+
+  const currentDateAndTime = new Date();
+  const minDate = currentDateAndTime.toISOString();
+  const db = await connectToDB();
+  const Bookingcollection = db.collection("Bookings");
+  const Carcollection = db.collection("carsdata");
+  let Bookingitems = [];
+  // Bookingitems = await Bookingcollection.find({}).toArray();
+  console.log(minDate);
+  Bookingitems = await Bookingcollection.find({
+    $or: [
+      { EndTime: { $gte: minDate } },
+      { "BookingDetails.EndTime": { $gte: minDate } },
+    ],
+  }).toArray();
+  // try {
+  //   let Bookingitems = await Bookingcollection.find({
+  //     "BookingDetails.EndTime": { $gte: minDate },
+  //   }).toArray();
+  //   console.log(Bookingitems);
+
+  //   // Process Bookingitems here
+  // } catch (error) {
+  //   console.error("Error fetching data:", error);
+  // }
+  console.log(Bookingitems);
+  let Caritems = await Carcollection.find({}).toArray();
+  //-----------------------------------------------------------------------
   //-----------------------------------------------------------------------
   for (let i = 0; i < Caritems.length; i++) {
     let flag = false;
     for (let j = 0; j < Bookingitems.length; j++) {
+      let d1 = new Date(
+        Bookingitems[j]?.EndTime?.split("T")[0] ||
+          Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
+      );
+      let d2 = new Date(date);
       if (
         Caritems[i]._id == Bookingitems[j].BookingDetails.car_id &&
-        Caritems[i]?.car_status == "Booked"
+        d1 >= d2
       ) {
-        let d1 = new Date(
-          Bookingitems[j]?.EndTime?.split("T")[0] ||
-            Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
-        );
-        let d2 = new Date(date);
         if (d1 >= d2) {
           console.log(Bookingitems[j]);
-          console.log(d1,d2);
+          console.log(d1, d2);
           flag = true;
           break;
         }
@@ -119,22 +131,22 @@ app.get("/getdata", async (req, res) => {
     }
 
     if (flag == false) {
-      console.log(Caritems[i],"FalseOne");
+      console.log(Caritems[i], "FalseOne");
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
       updatedItem.car_status = "Available";
-      Caritems[i]=updatedItem;
+      Caritems[i] = updatedItem;
       const collection = db.collection("carsdata");
       const result = await collection.updateOne(
         { _id: new ObjectId(itemId) },
         { $set: updatedItem }
       );
-    }else{
-      console.log(Caritems[i],"Trueone");
+    } else {
+      console.log(Caritems[i], "Trueone");
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
       updatedItem.car_status = "Booked";
-      Caritems[i]=updatedItem;
+      Caritems[i] = updatedItem;
       const collection = db.collection("carsdata");
       const result = await collection.updateOne(
         { _id: new ObjectId(itemId) },
@@ -143,9 +155,6 @@ app.get("/getdata", async (req, res) => {
     }
   }
   res.json(Caritems);
-  // const collection = db.collection("carsdata");
-  // const items = await collection.find({}).toArray();
-  // res.json(items);
 });
 
 //--adding cars data
@@ -215,7 +224,6 @@ app.get("/bookingsdata", async (req, res) => {
   const collection = db.collection("Bookings");
   const items = await collection.find({}).toArray();
   res.json(items);
-
 });
 
 //---modifying data---
@@ -256,7 +264,6 @@ app.delete("/deletebook/:id", async (req, res) => {
 //---------------------------------------------------------------------------------
 
 //----------------------------------------Staring Server---------------------------
-
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
