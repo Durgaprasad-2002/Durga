@@ -89,8 +89,8 @@ app.get("/getdata", async (req, res) => {
   const db = await connectToDB();
   const Bookingcollection = db.collection("Bookings");
   const Carcollection = db.collection("carsdata");
-  const Bookingitems = await Bookingcollection.find({}).toArray();
-  const Caritems = await Carcollection.find({}).toArray();
+  let Bookingitems = await Bookingcollection.find({}).toArray();
+  let Caritems = await Carcollection.find({}).toArray();
   //-----------------------------------------------------------------------
   const current = new Date();
   const date = `${current.getFullYear()}-${
