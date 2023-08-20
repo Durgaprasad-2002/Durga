@@ -38,7 +38,7 @@ const Update=async ()=>{
             Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
         );
         let d2 = new Date(date);
-        if (d1 > d2) {
+        if (d1 >= d2) {
           console.log(Bookingitems[j]);
           console.log(d1,d2);
           flag = true;
