@@ -31,6 +31,72 @@ async function connectToDB() {
   }
 }
 
+
+app.put("/postmail/:id", async (req, res) => {
+  let mail = req.params.id;
+  // Create a transporter using SMTP
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "prasaddurga2031@gmail.com",
+      pass: "iskcfaubrcdwfoeq",
+    },
+  });
+
+  const mailOptions = {
+    from: "prasaddurga2031@gmail.com",
+    to: mail,
+    subject: "Booking Details",
+    text: "Your Booking is Confirmed,\nHappy Journey...!",
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      res.json({ status: "Failed to send" });
+      console.log("Error sending email:", error);
+    } else {
+      res.json({ status: "Mail sent Successful" });
+      console.log("Email sent:", info.response);
+    }
+  });
+});
+
+app.put("/cancelmail/:id", async (req, res) => {
+  let mail = req.params.id;
+  // Create a transporter using SMTP
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "prasaddurga2031@gmail.com",
+      pass: "iskcfaubrcdwfoeq",
+    },
+  });
+
+  const mailOptions = {
+    from: "prasaddurga2031@gmail.com",
+    to: mail,
+    subject: "Booking Details",
+    text: "Your Booking is Cancelled..!",
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      res.json({ status: "Failed to send" });
+      console.log("Error sending email:", error);
+    } else {
+      res.json({ status: "Mail sent Successful" });
+      console.log("Email sent:", info.response);
+    }
+  });
+});
+
+
 //---------------------Login Credentials-------------------
 
 //---posting login details
