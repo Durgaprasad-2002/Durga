@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const app = express();
 const cors = require("cors");
+const fs = require("fs");
+const htmlContent = fs.readFileSync("Main.html", "utf8");
 const corsOptions = {
   origin: "*",
   credentials: true, //access-control-allow-credentials:true
@@ -31,6 +33,42 @@ async function connectToDB() {
     console.error("Error connecting to the database:", error);
   }
 }
+
+
+//---------------------------------------
+
+app.put("/signupmail/:id", async (req, res) => {
+  let mail = req.params.id;
+  // Create a transporter using SMTP
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
+
+    auth: {
+      user: "prasaddurga2031@gmail.com",
+      pass: "iskcfaubrcdwfoeq",
+    },
+  });
+
+  const mailOptions = {
+    from: "Sai@1234567",
+    to: mail,
+    subject: "Booking Details",
+    html: htmlContent,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      res.json({ status: "Failed to send" });
+      console.log("Error sending email:", error);
+    } else {
+      res.json({ status: "Mail sent Successful" });
+      console.log("Email sent:", info.response);
+    }
+  });
+});
 
 
 app.put("/postmail/:id", async (req, res) => {
