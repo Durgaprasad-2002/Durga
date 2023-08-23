@@ -87,7 +87,6 @@ app.get("/getdata", async (req, res) => {
   const Bookingcollection = db.collection("Bookings");
   const Carcollection = db.collection("carsdata");
   let Bookingitems = [];
-  // Bookingitems = await Bookingcollection.find({}).toArray();
   console.log(minDate);
   Bookingitems = await Bookingcollection.find({
     $or: [
@@ -95,13 +94,12 @@ app.get("/getdata", async (req, res) => {
       { "BookingDetails.EndTime": { $gte: minDate } },
     ],
   }).toArray();
-
   console.log(Bookingitems);
-
   let size = Bookingitems.length;
   let Caritems = await Carcollection.find({}).toArray();
-  //-----------------------------------------------------------------------
-  //-----------------------------------------------------------------------
+
+  //-----------------------------------------------------------
+
   for (let i = 0; i < Caritems.length; i++) {
     if (size === 0) break;
     let flag = false;
@@ -111,26 +109,22 @@ app.get("/getdata", async (req, res) => {
           Bookingitems[j]?.BookingDetails?.EndTime?.split("T")[0]
       );
       let d2 = new Date(date);
-      console.log(Bookingitems[j],"entered");
-       console.log(d1, d2);
       if (
-        Caritems[i]._id === Bookingitems[j].BookingDetails.car_id
-        
+        d1 >= d2 &&
+        Caritems[i]._id == Bookingitems[j].BookingDetails.car_id
       ) {
-        if (d1 >= d2) {
-          console.log(Bookingitems[j]);
-          console.log(d1, d2);
-          flag = true;
-          size = size - 1;
-          break;
-        }
+        console.log(Bookingitems[j]);
+        console.log(d1, d2);
+        flag = true;
+        size = size - 1;
+        break;
       }
     }
 
     if (flag == false) {
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
-      console.log(Caritems[i], "FalseOne");
+      console.log(Caritems[i], "FalseOne", flag);
       updatedItem.car_status = "Available";
       Caritems[i] = updatedItem;
       const collection = db.collection("carsdata");
@@ -141,7 +135,7 @@ app.get("/getdata", async (req, res) => {
     } else {
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
-      console.log(Caritems[i], "Trueone");
+      console.log(Caritems[i], "Trueone", flag);
       updatedItem.car_status = "Booked";
       Caritems[i] = updatedItem;
       const collection = db.collection("carsdata");
