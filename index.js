@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const { MongoClient, ObjectId } = require("mongodb");
 const { mongo } = require("mongoose");
 const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
 const app = express();
 const cors = require("cors");
 const corsOptions = {
