@@ -229,7 +229,9 @@ app.get("/getdata", async (req, res) => {
     if (flag == false) {
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
-      console.log(Caritems[i], "FalseOne", flag);
+      
+      if (updatedItem.car_status !== "Available"){
+        console.log(Caritems[i], "FalseOne", flag);
       updatedItem.car_status = "Available";
       Caritems[i] = updatedItem;
       const collection = db.collection("carsdata");
@@ -237,9 +239,11 @@ app.get("/getdata", async (req, res) => {
         { _id: new ObjectId(itemId) },
         { $set: updatedItem }
       );
+      }
     } else {
       const itemId = Caritems[i]._id;
       let updatedItem = Caritems[i];
+      if (updatedItem.car_status !== "Booked"){
       console.log(Caritems[i], "Trueone", flag);
       updatedItem.car_status = "Booked";
       Caritems[i] = updatedItem;
@@ -248,6 +252,7 @@ app.get("/getdata", async (req, res) => {
         { _id: new ObjectId(itemId) },
         { $set: updatedItem }
       );
+      }
     }
   }
   res.json(Caritems);
