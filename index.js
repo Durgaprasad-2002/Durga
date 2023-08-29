@@ -55,7 +55,7 @@ app.put("/signupmail/:id", async (req, res) => {
   const mailOptions = {
     from: "Sai@1234567",
     to: mail,
-    subject: "Booking Details",
+    subject: "SignUp Info",
     html: htmlContent,
   };
 
@@ -73,6 +73,12 @@ app.put("/signupmail/:id", async (req, res) => {
 
 app.put("/postmail/:id", async (req, res) => {
   let mail = req.params.id;
+  let userDetails;
+  if (req.body.BookingDetails == undefined || req.body.BookingDetails == null) {
+    userDetails = req.body;
+  } else {
+    userDetails = req.body.BookingDetails;
+  }
   // Create a transporter using SMTP
   const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -89,7 +95,23 @@ app.put("/postmail/:id", async (req, res) => {
     from: "prasaddurga2031@gmail.com",
     to: mail,
     subject: "Booking Details",
-    text: "Your Booking is Confirmed,\nHappy Journey...!",
+html: `
+    <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2 style="color: #007bff;">Booking Confirmation</h2>
+        <p>Hello <strong>${userDetails.name}</strong>,</p>
+        <p>Thank you for booking with us, Happy Journey..!<br/> Here are your details:</p>
+        <ul style="list-style-type: none; padding-left: 0;">
+          <li><strong>Name:</strong> ${userDetails.name}</li>
+          <li><strong>Email:</strong> ${userDetails.address}</li>
+          <li><strong>Car Model:</strong> ${userDetails.car_name}</li>
+          <li><strong>From Time:</strong> ${userDetails.StartTime}</li>
+          <li><strong>To Time:</strong> ${userDetails.EndTime}</li>
+        </ul>
+        <p>If you have any questions or need assistance, feel free to contact us.</p>
+        <p style="margin-top: 20px;">Best regards,</p>
+        <p><strong>Big Boy Toyz</strong></p>
+      </div>
+  `,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -105,6 +127,13 @@ app.put("/postmail/:id", async (req, res) => {
 
 app.put("/cancelmail/:id", async (req, res) => {
   let mail = req.params.id;
+
+  let userDetails;
+  if (req.body.BookingDetails == undefined || req.body.BookingDetails == null) {
+    userDetails = req.body;
+  } else {
+    userDetails = req.body.BookingDetails;
+  }
   // Create a transporter using SMTP
   const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -121,7 +150,23 @@ app.put("/cancelmail/:id", async (req, res) => {
     from: "prasaddurga2031@gmail.com",
     to: mail,
     subject: "Booking Details",
-    text: "Your Booking is Cancelled..!",
+   html: `
+    <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2 style="color: #007bff;">Booking Confirmation</h2>
+        <p>Hello <strong>${userDetails.name}</strong>,</p>
+        <p>Thank you for booking with us, Happy Journey..!<br/> Here are your details:</p>
+        <ul style="list-style-type: none; padding-left: 0;">
+          <li><strong>Name:</strong> ${userDetails.name}</li>
+          <li><strong>Email:</strong> ${userDetails.address}</li>
+          <li><strong>Car Model:</strong> ${userDetails.car_name}</li>
+          <li><strong>From Time:</strong> ${userDetails.StartTime}</li>
+          <li><strong>To Time:</strong> ${userDetails.EndTime}</li>
+        </ul>
+        <p>If you have any questions or need assistance, feel free to contact us.</p>
+        <p style="margin-top: 20px;">Best regards,</p>
+        <p><strong>Big Boy Toyz</strong></p>
+      </div>
+  `,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
