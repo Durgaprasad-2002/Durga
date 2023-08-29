@@ -99,7 +99,7 @@ html: `
     <div style="font-family: Arial, sans-serif; padding: 20px;">
         <h2 style="color: #007bff;">Booking Confirmation</h2>
         <p>Hello <strong>${userDetails.name}</strong>,</p>
-        <p>Thank you for booking with us, Happy Journey..!<br/> Here are your details:</p>
+        <p>Thank you for booking, Happy Journey..!<br/> Here are your details:</p>
         <ul style="list-style-type: none; padding-left: 0;">
           <li><strong>Name:</strong> ${userDetails.name}</li>
           <li><strong>Email:</strong> ${userDetails.address}</li>
@@ -152,7 +152,7 @@ app.put("/cancelmail/:id", async (req, res) => {
     subject: "Booking Details",
    html: `
     <div style="font-family: Arial, sans-serif; padding: 20px;">
-        <h2 style="color: #007bff;">Booking Confirmation</h2>
+        <h2 style="color: #007bff;">Booking Cancelled</h2>
         <p>Hello <strong>${userDetails.name}</strong>,</p>
         <p>Your Booking is Cancelled...!<br/> Here are your details:</p>
         <ul style="list-style-type: none; padding-left: 0;">
